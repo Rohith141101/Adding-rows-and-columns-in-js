@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: borde-box;
+}
+table, td {
+  border-collapse: collapse;
+}
+
+table {
+  border: 1px solid black;
+  width:100%;
+}
+
+td {
+  height: 30px;
+  width: 25%;
+  text-align: center;
+  border-bottom: 1px solid black;
+}
+
+td:last-child {
+  border-right: none;
+}
+
+.row {
+  width: 100%;
+}
+
+</style>
+</head>
+<body>
+
+<p>Click the buttons to add a row with 100% width and add column to the table.</p>
+
+<table id="myTable">
+  <tr class="row">
+    <td id="column1"></td>
+    <td id="column2"></td>
+    <td id="column3"></td>
+    <td id="column4"></td>
+  </tr>
+</table>
+<br>
+<button onclick="addRow()">Add Row</button>
+<button onclick="addColumn()">Add Column</button>
+
+<script>
+var selectedCell = null;
+
+function addRow() {
+  var table = document.getElementById("myTable");
+  var newRow = table.insertRow(-1);
+  newRow.className = "row";
+  
+  for (var i = 0; i < 4; i++) {
+    var newCell = newRow.insertCell(i);
+    newCell.textContent = "";
+  }
+}
+
+function addColumn() {
+  var table = document.getElementById("myTable");
+  var rows = table.rows;
+
+  if (selectedCell && selectedCell.cellIndex === 3) {
+    alert("Td's width exceeding 25%!");
+    return;
+  }
+  
+  if (selectedCell) {
+    for (var i = 0; i < rows.length; i++) {
+      var newRow = rows[i];
+      var newCell = newRow.insertCell(-1);
+      newCell.textContent = "";
+    }
+    selectedCell.style.borderRight = "1px solid black";
+    selectedCell = null; // Reset selectedCell after adding column
+  } else {
+    for (var i = 0; i < rows.length; i++) {
+      var firstCell = rows[i].cells[0];
+      firstCell.style.borderRight = "1px solid black"; // Add border-right to the first cell of each row
+    }
+  }
+}
+
+document.getElementById("myTable").addEventListener("click", function(event) {
+  var cell = event.target.closest("td");
+  if (cell) {
+    if (selectedCell) {
+      selectedCell.style.borderRight = "";
+    }
+    selectedCell = cell;
+  }
+});
+</script>
+
+</body>
+</html>
