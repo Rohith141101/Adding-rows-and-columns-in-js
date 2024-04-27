@@ -1,103 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Row and Column</title>
 <style>
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: borde-box;
-}
-table, td {
-  border-collapse: collapse;
-}
+  .container {
+    display: flex;
+    border: 1px solid black
+  }
 
-table {
-  border: 1px solid black;
-  width:100%;
-}
+  .row {
+    display: flex;
+    width: 100%;
+    height: 40px;
+  }
 
-td {
-  height: 30px;
-  width: 25%;
-  text-align: center;
-  border-bottom: 1px solid black;
-}
+  .column {
+    flex: 1;
+    border: 1px solid black;
+    border: none;
+    
+  }
 
-td:last-child {
-  border-right: none;
-}
-
-.row {
-  width: 100%;
-}
-
+  .add-button {
+    margin-bottom: 10px;
+  }
 </style>
 </head>
 <body>
+  <button id="add-row" class="add-button">Add Row</button>
+  <button id="add-column" class="add-button">Add Column</button>
+  <div id="container"></div>
 
-<p>Click the buttons to add a row with 100% width and add column to the table.</p>
+  <script>
+    var container = document.getElementById('container');
+    var rowCount = 0;
 
-<table id="myTable">
-  <tr class="row">
-    <td id="column1"></td>
-    <td id="column2"></td>
-    <td id="column3"></td>
-    <td id="column4"></td>
-  </tr>
-</table>
-<br>
-<button onclick="addRow()">Add Row</button>
-<button onclick="addColumn()">Add Column</button>
+    document.getElementById('add-row').addEventListener('click', function() {
+      rowCount++;
+      var newRow = document.createElement('div');
+      newRow.className = 'container row';
+      newRow.setAttribute('id', 'row-' + rowCount);
+      container.appendChild(newRow);
+      if (rowCount > 1) {
+        newRow.style.borderTop = 'none'; // Remove top border for rows except the first one
+      }
+    });
 
-<script>
-var selectedCell = null;
+    document.getElementById('add-column').addEventListener('click', function() {
+      var rows = document.querySelectorAll('.row');
+      var lastRow = rows[rows.length - 1];
+      if (!lastRow) {
+        alert('Please add a row first');
+        return;
+      }
 
-function addRow() {
-  var table = document.getElementById("myTable");
-  var newRow = table.insertRow(-1);
-  newRow.className = "row";
-  
-  for (var i = 0; i < 4; i++) {
-    var newCell = newRow.insertCell(i);
-    newCell.textContent = "";
-  }
-}
+      var columns = lastRow.querySelectorAll('.column');
+      if (columns.length >= 4) {
+        alert('Columns exceeding 25%');
+        return;
+      }
 
-function addColumn() {
-  var table = document.getElementById("myTable");
-  var rows = table.rows;
+      var newColumn = document.createElement('div');
+      newColumn.className = 'column';
+      newColumn.style.backgroundColor = getRandomLightColor(); // Apply random light color
+      lastRow.appendChild(newColumn);
+    });
 
-  if (selectedCell && selectedCell.cellIndex === 3) {
-    alert("Td's width exceeding 25%!");
-    return;
-  }
-  
-  if (selectedCell) {
-    for (var i = 0; i < rows.length; i++) {
-      var newRow = rows[i];
-      var newCell = newRow.insertCell(-1);
-      newCell.textContent = "";
+    // Function to generate a random light color
+    function getRandomLightColor() {
+      var r = 200 + Math.floor(Math.random() * 55); // Red value (between 200 and 255)
+      var g = 200 + Math.floor(Math.random() * 55); // Green value (between 200 and 255)
+      var b = 200 + Math.floor(Math.random() * 55); // Blue value (between 200 and 255)
+      return 'rgb(' + r + ',' + g + ',' + b + ')';
     }
-    selectedCell.style.borderRight = "1px solid black";
-    selectedCell = null; // Reset selectedCell after adding column
-  } else {
-    for (var i = 0; i < rows.length; i++) {
-      var firstCell = rows[i].cells[0];
-      firstCell.style.borderRight = "1px solid black"; // Add border-right to the first cell of each row
-    }
-  }
-}
-
-document.getElementById("myTable").addEventListener("click", function(event) {
-  var cell = event.target.closest("td");
-  if (cell) {
-    if (selectedCell) {
-      selectedCell.style.borderRight = "";
-    }
-    selectedCell = cell;
-  }
-});
-</script>
-
+  </script>
 </body>
 </html>
