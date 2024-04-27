@@ -7,20 +7,20 @@
 <style>
   .container {
     display: flex;
-    border: 1px solid black
+    border: 1px solid black;
   }
 
   .row {
     display: flex;
+    column-gap: 3px;
     width: 100%;
     height: 40px;
+    cursor: pointer;
   }
 
   .column {
     flex: 1;
     border: 1px solid black;
-    border: none;
-    
   }
 
   .add-button {
@@ -36,6 +36,8 @@
   <script>
     var container = document.getElementById('container');
     var rowCount = 0;
+    var rows = [];
+    var currentRow = null;
 
     document.getElementById('add-row').addEventListener('click', function() {
       rowCount++;
@@ -43,20 +45,27 @@
       newRow.className = 'container row';
       newRow.setAttribute('id', 'row-' + rowCount);
       container.appendChild(newRow);
+      rows.push(newRow); // Store the row reference
       if (rowCount > 1) {
         newRow.style.borderTop = 'none'; // Remove top border for rows except the first one
+      }
+      currentRow = newRow; // Update the current row
+    });
+
+    document.getElementById('container').addEventListener('click', function(event) {
+      var clickedRow = event.target.closest('.row');
+      if (clickedRow) {
+        currentRow = clickedRow;
       }
     });
 
     document.getElementById('add-column').addEventListener('click', function() {
-      var rows = document.querySelectorAll('.row');
-      var lastRow = rows[rows.length - 1];
-      if (!lastRow) {
-        alert('Please add a row first');
+      if (!currentRow) {
+        alert('Please select a row or add a new one first');
         return;
       }
 
-      var columns = lastRow.querySelectorAll('.column');
+      var columns = currentRow.querySelectorAll('.column');
       if (columns.length >= 4) {
         alert('Columns exceeding 25%');
         return;
@@ -65,7 +74,7 @@
       var newColumn = document.createElement('div');
       newColumn.className = 'column';
       newColumn.style.backgroundColor = getRandomLightColor(); // Apply random light color
-      lastRow.appendChild(newColumn);
+      currentRow.appendChild(newColumn);
     });
 
     // Function to generate a random light color
